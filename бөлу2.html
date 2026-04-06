@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конгресс Кітапханасы: Бөлу Жүйесі</title>
+    <style>
+        :root {
+            --bg: #05070a;
+            --gold: #c5a059;
+            --cyan: #00f2ff;
+            --panel: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: #eee;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            /* Скроллды тек қажет болғанда ғана шығарамыз */
+            overflow-x: hidden;
+        }
+
+        header {
+            height: 15vh;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            border-bottom: 2px solid var(--gold);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .header-title h1 {
+            color: var(--cyan);
+            font-size: 1.6rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 0.9rem;
+            color: var(--gold);
+            max-width: 500px;
+            text-align: right;
+            line-height: 1.4;
+        }
+
+        /* Негізгі контейнерді ортаға бағыттау */
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Горизонтальды орталау */
+            padding: 30px;
+            gap: 30px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Енгізу панелінің стилі */
+        .input-section {
+            background: var(--panel);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px; /* Енгізу терезесі тым жайылып кетпеуі үшін */
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        textarea {
+            height: 120px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--gold);
+            color: #00ff88;
+            padding: 12px;
+            font-family: 'Consolas', monospace;
+            border-radius: 8px;
+            resize: vertical;
+            outline: none;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 70px;
+            background: #000;
+            border: 1px solid var(--cyan);
+            color: #fff;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        button {
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-split {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+            grid-column: span 2; /* Батырманы толық еніне жаю */
+            font-size: 1rem;
+        }
+
+        .btn-split:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 25px rgba(0, 242, 255, 0.5);
+            background: #fff;
+        }
+
+        /* Нәтижелерді ортаға туралау */
+        .results-container {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap; /* Топтарды келесі қатарға түсіру */
+            justify-content: center; /* ОРТАҒА ТУРАЛАУ */
+            gap: 25px;
+            padding-bottom: 50px;
+        }
+
+        .hall-card {
+            background: linear-gradient(145deg, rgba(197,160,89,0.15), rgba(0,0,0,0.4));
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            width: 280px; /* Карточканың нақты ені */
+            min-height: 200px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            animation: cardAppear 0.6s backwards;
+            transition: transform 0.3s;
+        }
+
+        .hall-card:hover {
+            transform: scale(1.03);
+            border-color: var(--cyan);
+        }
+
+        .hall-card h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.2rem;
+            color: var(--cyan);
+            text-align: center;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 10px;
+            text-shadow: 0 0 5px rgba(0, 242, 255, 0.3);
+        }
+
+        .hall-card ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .hall-card li {
+            font-size: 1rem;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #ddd;
+            display: flex;
+            align-items: center;
+        }
+
+        .hall-card li::before {
+            content: "•";
+            color: var(--gold);
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            position: fixed; top: 15px; left: 15px;
+            background: var(--gold); color: #000;
+            border: none; padding: 10px 20px;
+            font-weight: bold; border-radius: 8px;
+            cursor: pointer; z-index: 200;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover { background: #fff; }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(30px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .method-footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #555;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<button class="back-btn" onclick="history.back()">⬅ Артқа</button>
+
+<header>
+    <div class="header-title">
+        <h1>LIBRARY OF CONGRESS</h1>
+        <div style="font-size: 0.85rem; color: var(--gold); font-weight: bold;">Бөліну әдісі: Кітапханалық Оқу Залдары</div>
+    </div>
+    <div class="quote">
+        "Еңбек қылсаң ерінбей, тояды қарның тіленбей." — Абай <br>
+        <span style="opacity: 0.8;">"Көптің ісі — береке." — Халық даналығы</span>
+    </div>
+</header>
+
+<main>
+    <section class="input-section">
+        <label style="font-size: 0.9rem; color: var(--cyan); text-transform: uppercase; letter-spacing: 1px;">Оқушылар тізімі (әр жолға бір есім):</label>
+        <textarea id="nameInput" placeholder="Есімдерді осында енгізіңіз..." oninput="autoSave()"></textarea>
+        
+        <div class="controls">
+            <div class="control-row">
+                <label>Залдар саны:</label>
+                <input type="number" id="groupSize" value="4" min="2" oninput="autoSave()">
+            </div>
+            <button onclick="resetAll()" style="background: transparent; border: 1px solid #444; color: #888;">Тазалау</button>
+            <button class="btn-split" onclick="distributeHalls()">Залдарға Бөлу</button>
+        </div>
+    </section>
+
+    <section id="hallsDisplay" class="results-container">
+        </section>
+</main>
+
+<div class="method-footer">
+    Әдіс: Әр топ "кітапханалық ресурс" ретінде бөлінеді. Деректер браузерде автоматты түрде сақталады.
+</div>
+
+<script>
+    window.onload = () => {
+        const saved = JSON.parse(localStorage.getItem('lib_system_data'));
+        if (saved) {
+            document.getElementById('nameInput').value = saved.names || "";
+            document.getElementById('groupSize').value = saved.count || 4;
+        }
+    };
+
+    function autoSave() {
+        const data = {
+            names: document.getElementById('nameInput').value,
+            count: document.getElementById('groupSize').value
+        };
+        localStorage.setItem('lib_system_data', JSON.stringify(data));
+    }
+
+    function resetAll() {
+        if(confirm("Барлық деректерді өшіруді растайсыз ба?")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    function distributeHalls() {
+        const namesVal = document.getElementById('nameInput').value.trim();
+        const count = parseInt(document.getElementById('groupSize').value);
+
+        if (!namesVal) {
+            alert("Алдымен есімдерді енгізіңіз!");
+            return;
+        }
+
+        let students = namesVal.split('\n').map(s => s.trim()).filter(s => s !== "");
+        // Рандомды түрде араластыру
+        students.sort(() => Math.random() - 0.5);
+
+        const display = document.getElementById('hallsDisplay');
+        display.innerHTML = "";
+
+        let halls = Array.from({ length: count }, () => []);
+        students.forEach((name, i) => {
+            halls[i % count].push(name);
+        });
+
+        const hallNames = ["Ғылыми зал", "Әдебиет залы", "Сирек қорлар", "Мерзімді басылымдар", "Өнер залы", "Анықтамалық бюро", "Цифрлық зал", "Тарихи зал", "Философия залы", "Техникалық зал"];
+
+        halls.forEach((hall, i) => {
+            if (hall.length === 0) return; // Бос залдарды көрсетпеу
+            
+            const card = document.createElement('div');
+            card.className = 'hall-card';
+            // Әр карточкаға кішкене кідіріспен анимация беру
+            card.style.animationDelay = `${i * 0.1}s`;
+            
+            card.innerHTML = `
+                <h3>🏛️ ${hallNames[i] || (i+1) + '-зал'}</h3>
+                <ul>${hall.map(n => `<li>${n}</li>`).join('')}</ul>
+            `;
+            display.appendChild(card);
+        });
+        
+        autoSave();
+        
+        // Бөлуден кейін нәтижелерге қарай скролл жасау
+        display.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+</script>
+
+</body>
+</html>

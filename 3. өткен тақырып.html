@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ашық Көк Неон - Үстеу Тесті</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --deep-bg: #000a1a;
+            --bright-blue: #00d2ff;
+            --neon-blue: #3a86ff;
+            --neon-green: #00ff88;
+            --neon-red: #ff3e3e;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--deep-bg);
+            background-image: 
+                radial-gradient(circle at center, #001f3f 0%, #000a1a 100%);
+            color: var(--white);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Аспандағы шашыраңқы неонды кітаптар мен қаламдар */
+        .decor-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 1.8rem;
+            color: var(--bright-blue);
+            text-shadow: 0 0 10px var(--bright-blue);
+            opacity: 0.3;
+            animation: floatAnim 12s infinite linear;
+        }
+
+        @keyframes floatAnim {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        header {
+            width: 100%;
+            padding: 30px 0;
+            text-align: center;
+            background: rgba(0, 210, 255, 0.05);
+            border-bottom: 3px solid var(--bright-blue);
+            box-shadow: 0 5px 20px rgba(0, 210, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .motto {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--bright-blue);
+            text-shadow: 0 0 8px var(--bright-blue);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            font-size: 2.2rem;
+            letter-spacing: 4px;
+            color: var(--white);
+            text-shadow: 0 0 15px var(--bright-blue), 0 0 30px var(--bright-blue);
+        }
+
+        #game-box {
+            background: rgba(0, 10, 26, 0.85);
+            width: 90%;
+            max-width: 650px;
+            margin-top: 50px;
+            padding: 40px;
+            border-radius: 30px;
+            border: 2px solid var(--bright-blue);
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.2);
+            text-align: center;
+        }
+
+        .screen { display: none; }
+        .active { display: block; }
+
+        /* Батырмалар стилі */
+        .action-btn {
+            font-family: 'Orbitron', sans-serif;
+            background: var(--bright-blue);
+            border: none;
+            color: var(--deep-bg);
+            padding: 18px 50px;
+            font-size: 1.4rem;
+            font-weight: 800;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.4s;
+            box-shadow: 0 0 20px var(--bright-blue);
+            margin-top: 25px;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px var(--bright-blue);
+            background: var(--white);
+        }
+
+        .option-item {
+            display: block;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(0, 210, 255, 0.4);
+            color: var(--white);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.3s;
+        }
+
+        .option-item:hover {
+            border-color: var(--bright-blue);
+            background: rgba(0, 210, 255, 0.2);
+            box-shadow: inset 0 0 15px rgba(0, 210, 255, 0.3);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        #timer-box {
+            font-size: 2.5rem;
+            color: var(--neon-red);
+            text-shadow: 0 0 15px var(--neon-red);
+            font-weight: bold;
+        }
+
+        .correct { 
+            background: var(--neon-green) !important; 
+            color: var(--deep-bg) !important; 
+            border-color: var(--white) !important;
+            box-shadow: 0 0 25px var(--neon-green);
+        }
+        
+        .incorrect { 
+            background: var(--neon-red) !important; 
+            color: var(--white) !important;
+            box-shadow: 0 0 25px var(--neon-red);
+        }
+
+        #final-score {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 6rem;
+            color: var(--neon-green);
+            text-shadow: 0 0 30px var(--neon-green);
+            margin: 20px 0;
+        }
+
+        .question-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            color: var(--white);
+        }
+         .back-btn {
+            position: fixed; top: 10px; left: 10px;
+            background-color: #42a2f1; color: rgb(252, 247, 247);
+            border: none; padding: 10px 18px;
+            font-size: 14px; border-radius: 10px;
+            cursor: pointer; z-index: 150;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="history.back()">⬅ Артқа қайту</button>
+
+
+<div class="decor-layer" id="icons-bg"></div>
+
+<header>
+    <div class="motto">"Еңбек, кітапхана және қайталау – табысты оқушының үш тірегі"</div>
+    <h1>ӨТКЕН ТАҚЫРЫПҚА ШОЛУ</h1>
+</header>
+
+<div id="game-box">
+    <div id="start-scr" class="screen active">
+        <h2 style="font-size: 2rem; color: var(--bright-blue);">КІМ ЖЫЛДАМ?</h2>
+        <p style="font-size: 1.2rem; margin: 20px 0;">Үстеулер тақырыбы бойынша біліміңізді тексеруге дайынсыз ба?</p>
+        <button class="action-btn" onclick="initGame()">БАСТАУ</button>
+    </div>
+
+    <div id="quiz-scr" class="screen">
+        <div class="game-header">
+            <div style="color: var(--bright-blue)">СҰРАҚ: <span id="q-count">1</span>/5</div>
+            <div id="timer-box">15</div>
+            <div style="color: var(--neon-green)">ҰПАЙ: <span id="current-score">0</span></div>
+        </div>
+        <div class="question-text" id="q-text"></div>
+        <div id="ans-list"></div>
+    </div>
+
+    <div id="result-scr" class="screen">
+        <h2 style="color: var(--bright-blue); font-size: 2.5rem;">НӘТИЖЕ</h2>
+        <div id="final-score">0</div>
+        <p id="msg-box" style="font-size: 1.4rem; margin-bottom: 30px; font-weight: 600;"></p>
+        <button class="action-btn" onclick="location.reload()">ҚАЙТАЛАУ</button>
+    </div>
+</div>
+
+<script>
+    // Фондағы қалқымалы белгішелерді құру
+    const icons = ['📚', '📖', '🖋️', '📜', '📘', '✨'];
+    const bg = document.getElementById('icons-bg');
+    for(let i=0; i<30; i++) {
+        const item = document.createElement('div');
+        item.className = 'floating-icon';
+        item.innerText = icons[Math.floor(Math.random()*icons.length)];
+        item.style.left = Math.random()*100 + 'vw';
+        item.style.animationDuration = (Math.random()*10 + 10) + 's';
+        item.style.animationDelay = (Math.random()*10) + 's';
+        bg.appendChild(item);
+    }
+
+    const quizData = [
+        { q: "Үстеудің анықтамасын көрсет: Үстеу дегеніміз не?", a: ["Заттың атын білдіретін сөз", "Іс-әрекеттің сынын, мезгілін, мекенін, мөлшерін білдіретін сөз", "Заттың санын білдіретін сөз", "Сөйлем мүшесі емес сөз"], c: 1 },
+        { q: "Қай сөз мезгіл үстеуі?", a: ["төменде", "кеше", "өте", "әдейі"], c: 1 },
+        { q: "Берілген сөйлемнен мекен үстеуін тап: 'Ол үйде отырды.'", a: ["ол", "үйде", "отырды", "жоқ"], c: 1 },
+        { q: "Сөйлемнен мөлшер үстеуін анықта: 'Ол өте жақсы оқиды.'", a: ["өте", "жақсы", "оқиды", "ол"], c: 0 },
+        { q: "Сын-қимыл үстеуі бар сөйлемді тап:", a: ["Ол баяу жүрді.", "Ол кеше келді.", "Ол төменде тұр.", "Ол сондықтан кетті."], c: 0 }
+    ];
+
+    let idx = 0;
+    let score = 0;
+    let timer;
+    let left = 15;
+
+    function playSfx(win) {
+        try {
+            const a = new (window.AudioContext || window.webkitAudioContext)();
+            const o = a.createOscillator();
+            const g = a.createGain();
+            o.connect(g); g.connect(a.destination);
+            o.frequency.setValueAtTime(win ? 900 : 150, a.currentTime);
+            g.gain.setValueAtTime(0.1, a.currentTime);
+            o.start(); o.stop(a.currentTime + 0.2);
+        } catch(e) {}
+    }
+
+    function initGame() {
+        document.getElementById('start-scr').style.display = 'none';
+        document.getElementById('quiz-scr').style.display = 'block';
+        showNext();
+    }
+
+    function showNext() {
+        if(idx >= quizData.length) return finish();
+        
+        left = 15;
+        document.getElementById('timer-box').innerText = left;
+        clearInterval(timer);
+        timer = setInterval(() => {
+            left--;
+            document.getElementById('timer-box').innerText = left;
+            if(left <= 0) { clearInterval(timer); check(-1); }
+        }, 1000);
+
+        const data = quizData[idx];
+        document.getElementById('q-count').innerText = idx + 1;
+        document.getElementById('q-text').innerText = data.q;
+        
+        const list = document.getElementById('ans-list');
+        list.innerHTML = '';
+        data.a.forEach((txt, i) => {
+            const b = document.createElement('button');
+            b.className = 'option-item';
+            b.innerText = txt;
+            b.onclick = () => check(i);
+            list.appendChild(b);
+        });
+    }
+
+    function check(val) {
+        clearInterval(timer);
+        const correctIdx = quizData[idx].c;
+        const btns = document.querySelectorAll('.option-item');
+        btns.forEach(b => b.style.pointerEvents = 'none');
+
+        if(val === correctIdx) {
+            score++;
+            document.getElementById('current-score').innerText = score;
+            if(val !== -1) btns[val].classList.add('correct');
+            playSfx(true);
+        } else {
+            if(val !== -1) btns[val].classList.add('incorrect');
+            btns[correctIdx].classList.add('correct');
+            playSfx(false);
+        }
+
+        idx++;
+        setTimeout(showNext, 1200);
+    }
+
+    function finish() {
+        document.getElementById('quiz-scr').style.display = 'none';
+        document.getElementById('result-scr').style.display = 'block';
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('msg-box').innerText = score === 5 ? "КЕРЕМЕТ! Сіз барлығын білесіз!" : "ЖАҚСЫ! Біліміңізді тағы да жетілдіре түсіңіз.";
+    }
+</script>
+
+</body>
+</html>

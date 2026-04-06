@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Топтық жұмыс – кітапханадағы білім</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-brown: #4a3728;
+            --accent-gold: #c5a059;
+            --bg-cream: #fdfaf1;
+            --dark-green: #2d4a3e;
+            --text-dark: #333;
+            --shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            color: var(--accent-gold);
+        }
+
+        .hero blockquote {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            max-width: 800px;
+            margin-bottom: 40px;
+            font-style: italic;
+            border-left: none;
+        }
+
+        .btn-start {
+            padding: 15px 40px;
+            background-color: var(--accent-gold);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-start:hover {
+            background-color: #b08d4a;
+            transform: translateY(-3px);
+        }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 50px;
+            color: var(--primary-brown);
+        }
+
+        /* --- Group Cards --- */
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .group-card {
+            background: #fff;
+            padding: 40px;
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: transform 0.4s ease;
+            border-bottom: 5px solid transparent;
+            overflow: hidden;
+            background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 30px 100%; /* Кітап бетіне ұқсас эффект */
+        }
+
+        .group-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: 1px solid rgba(0,0,0,0.05);
+            pointer-events: none;
+        }
+
+        .group-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .group-card.blue { border-bottom-color: #3498db; }
+        .group-card.green { border-bottom-color: #27ae60; }
+        .group-card.red { border-bottom-color: #e74c3c; }
+
+        .group-icon {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .group-card h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+            color: var(--primary-brown);
+        }
+
+        .group-card p {
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            color: #666;
+        }
+
+        .interactive-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--primary-brown);
+            background: transparent;
+            color: var(--primary-brown);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .interactive-btn:hover {
+            background: var(--primary-brown);
+            color: #fff;
+        }
+
+        /* --- Modal/List styling --- */
+        .questions-list {
+            display: none;
+            margin-top: 20px;
+            text-align: left;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .questions-list ul {
+            list-style-type: none;
+        }
+
+        .questions-list li {
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
+            font-size: 0.9rem;
+            color: var(--dark-green);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: var(--primary-brown);
+            color: var(--bg-cream);
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 50px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero blockquote { font-size: 1.6rem; }
+            .section-title { font-size: 1.8rem; }
+        }
+        .back-btn {
+            position: fixed; top: 20px; left: 20px;
+            background-color: #b08d4a; color: rgb(252, 250, 250);
+            border: none; padding: 10px 18px;
+            font-size: 14px; border-radius: 10px;
+            cursor: pointer; z-index: 150;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="history.back()">⬅ Артқа қайту</button>
+
+    <header class="hero">
+        <h1>Топтық жұмыс – кітапханадағы білім</h1>
+        <blockquote>“Бірлескен еңбек пен кітапханадан алынған білім топты биік жетістікке жеткізеді”</blockquote>
+        <a href="#work-section" class="btn-start">Жұмысты бастау</a>
+    </header>
+
+    <main class="container" id="work-section">
+        <button class="back-btn" onclick="history.back()">⬅ Артқа қайту</button>
+        <h2 class="section-title">Оқу залдары: Топтық тапсырмалар</h2>
+
+        <div class="groups-grid">
+            <div class="group-card blue">
+                <span class="group-icon">🟦</span>
+                <h3>1-топ: Негізгі ақпарат</h3>
+                <p><b>Міндеті:</b> Оқулықтағы мәтін бойынша ең маңызды тірек сөздер мен негізгі ақпаратты анықтау.</p>
+                <button class="interactive-btn" onclick="toggleQuestions('q1')">Негізгі ақпарат сұрақтарын құру</button>
+                <div id="q1" class="questions-list">
+                    <ul>
+                        <li>• Мәтіндегі басты оқиға немесе ұғым қандай?</li>
+                        <li>• Негізгі кейіпкерлер немесе терминдерді атаңыз?</li>
+                        <li>• Оқиғаның болу себебі неде?</li>
+                        <li>• Мәтін бойынша 3 тірек сөзді таңдаңыз.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="group-card green">
+                <span class="group-icon">🟩</span>
+                <h3>2-топ: Қосымша ақпарат</h3>
+                <p><b>Міндеті:</b> Мәтін ішіндегі жанама детальдарды, қызықты деректерді және қосымша ақпаратты табу.</p>
+                <button class="interactive-btn" onclick="toggleQuestions('q2')">Қосымша ақпарат сұрақтары</button>
+                <div id="q2" class="questions-list">
+                    <ul>
+                        <li>• Мәтіндегі сан мәліметтері немесе даталар не туралы?</li>
+                        <li>• Автор тағы қандай қызықты деректерді келтірген?</li>
+                        <li>• Бұл ақпараттың негізгі тақырыпқа қандай қатысы бар?</li>
+                        <li>• Мәтіннен тыс тағы қандай деректерді білесіз?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="group-card red">
+                <span class="group-icon">🟥</span>
+                <h3>3-топ: Мәселені анықтау</h3>
+                <p><b>Міндеті:</b> Мәтінде көтерілген басты проблеманы, автордың позициясын және шешім жолдарын талдау.</p>
+                <button class="interactive-btn" onclick="toggleQuestions('q3')">Мәселені анықтау сұрақтары</button>
+                <div id="q3" class="questions-list">
+                    <ul>
+                        <li>• Автор қандай түйіткілді мәселені алға тартады?</li>
+                        <li>• Бұл мәселенің бүгінгі күндегі өзектілігі қандай?</li>
+                        <li>• Проблеманың туындау себептері мен салдары?</li>
+                        <li>• Сіз бұл мәселені қалай шешер едіңіз?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Кітапханадағы білім. Барлық құқықтар қорғалған.</p>
+        <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.7;">Академиялық орта – Болашаққа жол</p>
+    </footer>
+
+    <script>
+        function toggleQuestions(id) {
+            const list = document.getElementById(id);
+            if (list.style.display === "block") {
+                list.style.display = "none";
+            } else {
+                // Барлығын жауып, тек таңдалғанын ашу (опционалды)
+                document.querySelectorAll('.questions-list').forEach(el => el.style.display = 'none');
+                list.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>

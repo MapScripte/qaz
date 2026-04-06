@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Жеке жұмыс бөлімі</title>
+    <style>
+        /* Негізгі фон мен стиль */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Кітапхана атмосферасы */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
+                        url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&q=80&w=1600');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+
+        .main-card {
+            background: rgba(15, 15, 15, 0.95);
+            border: 2px solid #00d4ff;
+            box-shadow: 0 0 15px #00d4ff, inset 0 0 10px #00d4ff;
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 700px;
+            width: 90%;
+            text-align: center;
+            animation: neonPulse 3s infinite alternate;
+        }
+
+        @keyframes neonPulse {
+            from { box-shadow: 0 0 15px #00d4ff; border-color: #00d4ff; }
+            to { box-shadow: 0 0 25px #bc13fe; border-color: #bc13fe; }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+            letter-spacing: 2px;
+        }
+
+        .conditions-box {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #bc13fe;
+            margin-bottom: 40px;
+        }
+
+        .conditions-box h2 {
+            color: #bc13fe;
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        .conditions-box p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e0e0e0;
+        }
+
+        .highlight {
+            color: #00d4ff;
+            font-weight: bold;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+
+        /* Фото-батырма стилі */
+        .image-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid #00d4ff;
+        }
+
+        .image-container img {
+            width: 100%;
+            max-width: 450px;
+            display: block;
+            transition: 0.5s;
+            filter: brightness(0.6) sepia(0.3);
+        }
+
+        .image-container:hover {
+            transform: scale(1.03);
+            border-color: #bc13fe;
+            box-shadow: 0 0 30px #bc13fe;
+        }
+
+        .image-container:hover img {
+            filter: brightness(1) sepia(0);
+        }
+
+        .overlay-text {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(188, 19, 254, 0.8);
+            color: white;
+            padding: 10px 0;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .back-btn {
+            position: fixed; top: 20px; left: 20px;
+            background-color: #bc13fe; color: rgb(253, 251, 251);
+            border: none; padding: 10px 18px;
+            font-size: 14px; border-radius: 10px;
+            cursor: pointer; z-index: 150;
+        }
+
+    </style>
+</head>
+<body>
+     <button class="back-btn" onclick="history.back()">⬅ Артқа қайту</button>
+
+    <div class="main-card">
+        <h1>Жеке жұмыс</h1>
+
+        <div class="conditions-box">
+            <h2>Жұмыс шарты:</h2>
+            <p>
+                1. Төмендегі суретті басу арқылы тапсырмаға өтіңіз.<br>
+                2. <span class="highlight">Берілген QR кодты сканерлеп</span>, 10 сұраққа жауап беріңіз.<br>
+                3. Жауап беру алдында өз <span class="highlight">аты-жөніңізді</span> толық жазуды ұмытпаңыз.
+            </p>
+        </div>
+
+        <div class="image-container" onclick="location.href='https://create.kahoot.it/share/kazakh-adverbs-identify-classify-and-synonyms/d416fe23-7b7f-45da-a813-c1f1652e70ba'">
+            <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=800" alt="Кітапхана стилі">
+            <div class="overlay-text">САЙТҚА ӨТУ ҮШІН БАСЫҢЫЗ</div>
+        </div>
+    </div>
+
+</body>
+</html>

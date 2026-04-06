@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Суретті Үстеулер - Көңілді Ойын</title>
+    <style>
+        :root {
+            --bg: #fdf5e6;
+            --main: #5d4037;
+            --accent: #f1c40f;
+            --blue: #2980b9;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+            overflow: hidden;
+        }
+
+        /* Бастапқы бет стилі */
+        #start-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 62, 80, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            color: white;
+            text-align: center;
+        }
+
+        .start-btn {
+            padding: 25px 60px;
+            font-size: 35px;
+            background: var(--accent);
+            color: var(--main);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 10px 0 #b7950b;
+            transition: 0.2s;
+        }
+
+        .start-btn:hover { transform: scale(1.1); background: #ffeb3b; }
+        .start-btn:active { transform: translateY(5px); box-shadow: none; }
+
+        .game-card {
+            background: var(--bg);
+            width: 90%;
+            max-width: 650px;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 8px solid var(--main);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            display: none; /* Бастапқыда жасырулы */
+        }
+
+        .shelf {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: var(--main);
+            height: 70px;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            align-items: flex-end;
+            border-bottom: 10px solid #3e2723;
+        }
+
+        .book-reward {
+            width: 35px;
+            height: 55px;
+            background: var(--blue);
+            border-left: 6px solid var(--accent);
+            animation: drop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes drop {
+            0% { transform: translateY(-150px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .image-display {
+            font-size: 110px;
+            background: white;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            border: 8px solid var(--accent);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .question-text {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: var(--main);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .option-btn {
+            padding: 20px;
+            font-size: 24px;
+            border: none;
+            border-radius: 15px;
+            background: var(--blue);
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: bold;
+            box-shadow: 0 6px 0 #1a5276;
+        }
+
+        .option-btn:hover { background: #3498db; transform: translateY(-3px); }
+        .option-btn:active { transform: translateY(3px); box-shadow: none; }
+
+        .correct { background: #27ae60 !important; box-shadow: 0 6px 0 #1e8449 !important; }
+        .wrong { background: #e74c3c !important; box-shadow: 0 6px 0 #943126 !important; }
+
+        #msg {
+            margin-top: 20px;
+            height: 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .win-screen {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg);
+            border-radius: 12px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        .back-btn {
+            position: fixed; top: 20px; left: 20px;
+            background-color: #ffeb3b; color: rgb(10, 10, 10);
+            border: none; padding: 10px 18px;
+            font-size: 14px; border-radius: 10px;
+            cursor: pointer; z-index: 150;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="history.back()">⬅ Артқа қайту</button>
+
+<div id="start-screen">
+    <h1 style="font-size: 60px; margin-bottom: 10px;">📚 Көңілді Кітапхана</h1>
+    <p style="font-size: 24px; margin-bottom: 40px;">Суретке қарап, үстеуді тап!</p>
+    <button class="start-btn" onclick="startGame()">ОЙЫНДЫ БАСТАУ ▶️</button>
+</div>
+
+<div class="game-card" id="main-game">
+    <div class="shelf" id="shelf"></div>
+
+    <div class="image-display" id="icon-display">🏃</div>
+    <div class="question-text" id="q-text">Жүктелуде...</div>
+
+    <div class="options-grid" id="options"></div>
+
+    <div id="msg"></div>
+
+    <div class="win-screen" id="win-screen">
+        <h1 style="font-size: 60px; color: var(--main);">КЕРЕМЕТ! 🎉</h1>
+        <p style="font-size: 24px;">Сен барлық кітапты жинап шықтың!</p>
+        <button class="option-btn" style="margin-top: 30px;" onclick="location.reload()">ҚАЙТА БАСТАУ</button>
+    </div>
+</div>
+
+<script>
+    const levels = [
+        { icon: "🏃‍♂️", q: "Бала қалай жүгіріп барады?", opts: ["Тез", "Алыс", "Ертең", "Биік"], correct: "Тез" },
+        { icon: "🐢", q: "Тасбақа қалай қозғалады?", opts: ["Көп", "Жай", "Төмен", "Жоғары"], correct: "Жай" },
+        { icon: "🛫", q: "Ұшақ қайда ұшып барады?", opts: ["Бүгін", "Көп", "Жоғары", "Ақырын"], correct: "Жоғары" },
+        { icon: "🧗", q: "Альпинист қайда өрмелеп барады?", opts: ["Алға", "Артқа", "Төмен", "Жоғары"], correct: "Жоғары" },
+        { icon: "🐌", q: "Ұлу қалай жылжиды?", opts: ["Ақырын", "Тез", "Көп", "Бүгін"], correct: "Ақырын" }
+    ];
+
+    let currentLevel = 0;
+
+    function startGame() {
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('main-game').style.display = 'block';
+        loadLevel();
+    }
+
+    function loadLevel() {
+        if (currentLevel >= levels.length) {
+            document.getElementById('win-screen').style.display = 'flex';
+            return;
+        }
+
+        const data = levels[currentLevel];
+        document.getElementById('icon-display').innerText = data.icon;
+        document.getElementById('q-text').innerText = data.q;
+        document.getElementById('msg').innerText = "";
+
+        const optContainer = document.getElementById('options');
+        optContainer.innerHTML = "";
+
+        data.opts.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(opt, btn);
+            optContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(choice, btn) {
+        if (choice === levels[currentLevel].correct) {
+            btn.classList.add('correct');
+            document.getElementById('msg').innerText = "Жарайсың! ✨";
+            document.getElementById('msg').style.color = "#27ae60";
+            addBook();
+            currentLevel++;
+            setTimeout(loadLevel, 1000);
+        } else {
+            btn.classList.add('wrong');
+            document.getElementById('msg').innerText = "Қайта байқап көр! 😊";
+            document.getElementById('msg').style.color = "#e74c3c";
+            setTimeout(() => btn.classList.remove('wrong'), 500);
+        }
+    }
+
+    function addBook() {
+        const shelf = document.getElementById('shelf');
+        const book = document.createElement('div');
+        book.className = 'book-reward';
+        const colors = ['#2980b9', '#c0392b', '#27ae60', '#8e44ad', '#f39c12'];
+        book.style.backgroundColor = colors[currentLevel % colors.length];
+        shelf.appendChild(book);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Labor Library - Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff00ff;
+            --neon-yellow: #f8ff00;
+            --neon-green: #39ff14;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: #000;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: background 1s ease;
+        }
+
+        .grid {
+            position: absolute;
+            width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            display: none; /* Басында жабық тұрады */
+        }
+
+        #main-container {
+            text-align: center;
+            z-index: 10;
+            display: none; /* Басында жабық тұрады */
+        }
+
+        /* Бастапқы экран */
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .magic-book {
+            font-size: 150px;
+            cursor: pointer;
+            filter: drop-shadow(0 0 20px var(--neon-cyan));
+            animation: float 3s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        #instruction-box {
+            min-height: 80px;
+            font-size: 28px;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 10px var(--neon-yellow);
+            margin: 20px 0;
+        }
+
+        #reward-box {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--neon-pink);
+            text-shadow: 0 0 20px var(--neon-pink);
+            margin-top: 20px;
+            min-height: 50px;
+        }
+
+        /* Батырмалар стилі */
+        .btn {
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 15px 40px;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            box-shadow: 0 0 15px var(--neon-cyan);
+            margin: 10px;
+        }
+
+        .btn:hover {
+            background: var(--neon-cyan);
+            color: black;
+            box-shadow: 0 0 40px var(--neon-cyan);
+        }
+
+        .btn-start { border-color: var(--neon-green); color: var(--neon-green); box-shadow: 0 0 15px var(--neon-green); }
+        .btn-start:hover { background: var(--neon-green); box-shadow: 0 0 40px var(--neon-green); }
+
+        .btn-finish { border-color: var(--neon-pink); color: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink); }
+        .btn-finish:hover { background: var(--neon-pink); box-shadow: 0 0 40px var(--neon-pink); }
+
+        .particle { position: absolute; pointer-events: none; background: var(--neon-cyan); border-radius: 50%; }
+        .back-btn {
+            --neon-cyan: #00f3ff;
+            position: fixed; top: 20px; left: 20px;
+            background-color: #26b4ec; color: rgb(7, 7, 7);
+            border: none; padding: 10px 18px;
+            font-size: 14px; border-radius: 10px;
+            cursor: pointer; z-index: 150;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="history.back()">⬅ Артқа қайту</button>
+
+<div class="grid" id="bg-grid"></div>
+
+<div id="start-screen">
+    <h1 style="color: var(--neon-cyan); text-shadow: 0 0 20px var(--neon-cyan); font-family: 'Orbitron';">СИҚЫРЛЫ КІТАП</h1>
+    <button class="btn btn-start" onclick="initLibrary()">БАСТАУ 🚀</button>
+</div>
+
+<div id="main-container">
+    <div id="instruction-box">Кітапты басып, тапсырманы орындаңыз!</div>
+    
+    <div class="magic-book" id="book" onclick="nextStep()">📖</div>
+
+    <div id="reward-box"></div>
+    
+    <div style="margin-top: 30px;">
+        <button id="action-btn" class="btn" style="display:none;" onclick="showReward()">ҚИМЫЛДЫ ОРЫНДАДЫҚ! ✅</button>
+        <button class="btn btn-finish" onclick="finishSession()">САБАҚҚА КӨШУ 🏁</button>
+    </div>
+</div>
+
+<script>
+    const instructions = [
+        "Көршіңізге қарап күлімсіреңіз! 😊",
+        "Қол соғып, 'Мен еңбекқормын!' деп айтыңыз! 👏",
+        "Кітап оқып отырғандай қимыл жасаңыз! 📚",
+        "Көршіңізге сәттілік тілеп, қолын қысыңыз! 🤝",
+        "Бойыңызды тік ұстап, 'Қолымнан бәрі келеді!' деңіз! 💪"
+    ];
+
+    const laborBooks = [
+        "📚 'Еңбек түбі - береке' (Халық даналығы)",
+        "📚 'Білімсіз еңбек – әлсіз, еңбексіз білім – мәнсіз'",
+        "📚 'Еңбек пен кітап – адамның рухани байлығын арттыратын қос қанат'",
+        "📚 'Кітапханада табылған білім – еңбекте жеңіске жеткізеді'",
+        "📚 'Еңбек етпей алынған білім – кітапта қалатын бос сөз, ал еңбекпен ұштасқан білім – өмірлік күш'",
+        "📚 'Кітап – ойды байытады, еңбек – сол ойды шындыққа айналдырады'"
+    ];
+
+    function initLibrary() {
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('main-container').style.display = 'block';
+        document.getElementById('bg-grid').style.display = 'block';
+        document.body.style.background = '#050505';
+        createParticles(50);
+    }
+
+    function nextStep() {
+        const rewardBox = document.getElementById('reward-box');
+        const actionBtn = document.getElementById('action-btn');
+        const instrBox = document.getElementById('instruction-box');
+        
+        rewardBox.innerText = "";
+        instrBox.innerText = instructions[Math.floor(Math.random() * instructions.length)];
+        actionBtn.style.display = "inline-block";
+        
+        document.getElementById('book').style.filter = "drop-shadow(0 0 50px var(--neon-pink))";
+    }
+
+    function showReward() {
+        const rewardBox = document.getElementById('reward-box');
+        const instrBox = document.getElementById('instruction-box');
+        const actionBtn = document.getElementById('action-btn');
+        
+        instrBox.innerText = "ЖАРАЙСЫҢДАР! ОСЫ ДӘЙЕКСӨЗДІ АШТЫҢЫЗДАР:";
+        rewardBox.innerText = laborBooks[Math.floor(Math.random() * laborBooks.length)];
+        actionBtn.style.display = "none";
+        
+        document.getElementById('book').style.filter = "drop-shadow(0 0 30px var(--neon-green))";
+        createParticles(30);
+    }
+
+    function finishSession() {
+        document.getElementById('main-container').innerHTML = `
+            <h1 style="color:var(--neon-green); font-size: 50px; text-shadow: 0 0 30px var(--neon-green); font-family:'Orbitron';">
+                СӘТТІЛІК, ЖАС ЕҢБЕКҚОР!
+            </h1>
+            <p style="font-size: 24px; color: var(--neon-cyan);">Кітапхана энергиясы сіздермен бірге!</p>
+            <div style="font-size: 100px;">✨🚀✨</div>
+        `;
+        setTimeout(() => {
+            createParticles(100);
+        }, 500);
+    }
+
+    function createParticles(num) {
+        for (let i = 0; i < num; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 5 + 2;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = '50%';
+            p.style.top = '50%';
+            document.body.appendChild(p);
+            const destX = (Math.random() - 0.5) * 800;
+            const destY = (Math.random() - 0.5) * 800;
+            p.animate([
+                { transform: 'translate(0, 0)', opacity: 1 },
+                { transform: `translate(${destX}px, ${destY}px)`, opacity: 0 }
+            ], { duration: 1500, easing: 'ease-out' }).onfinish = () => p.remove();
+        }
+    }
+</script>
+
+</body>
+</html>
