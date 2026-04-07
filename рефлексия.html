@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кітапхана: Жылдам рефлексия</title>
+    <style>
+        body {
+            background-color: #f4ece1;
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #3e2723;
+            overflow: hidden; /* Экран артық қозғалмауы үшін */
+        }
+
+        .library-shelf {
+            background: #5d4037;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            text-align: center;
+            width: 95%;
+            max-width: 900px;
+            border-bottom: 20px solid #3e2723;
+        }
+
+        h1 {
+            color: #ffecb3;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            color: #d7ccc8;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .books-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .book-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .counter {
+            background: #ffecb3;
+            color: #3e2723;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .book {
+            width: 170px;
+            height: 250px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px 15px 15px 5px;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 5px 10px 20px rgba(0,0,0,0.3);
+            user-select: none;
+        }
+
+        .book:active {
+            transform: scale(0.9);
+        }
+
+        .book-icon { font-size: 50px; margin-bottom: 15px; }
+
+        .green-book { background-color: #4caf50; color: white; border-left: 12px solid #2e7d32; }
+        .yellow-book { background-color: #ffc107; color: #3e2723; border-left: 12px solid #ffa000; }
+        .red-book { background-color: #e53935; color: white; border-left: 12px solid #c62828; }
+
+        /* Хабарлама терезесі */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 99;
+            cursor: pointer; /* Қай жерді басса да жабылатынын білдіреді */
+        }
+
+        #message-box {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 40px;
+            border-radius: 30px;
+            z-index: 100;
+            text-align: center;
+            pointer-events: none; /* Хабарламаның өзін емес, астындағы overlay-ді басу үшін */
+        }
+
+        #message-box h2 { font-size: 2rem; color: #5d4037; margin-bottom: 10px; }
+        #message-box p { color: #888; font-weight: bold; }
+
+        .reset-btn {
+            margin-top: 40px;
+            background: none;
+            border: none;
+            color: #8d6e63;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.8rem;
+        }
+        .back-btn {
+            position: fixed; top: 20px; left: 20px;
+            background-color: #5d4037; color: #ffa000;
+            border: none; padding: 10px 18px;
+            font-size: 14px; border-radius: 10px;
+            cursor: pointer; z-index: 150;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="history.back()">⬅ Артқа қайту</button>
+
+    <div class="library-shelf">
+        <h1>Білім кітапханасы</h1>
+        <p class="subtitle">Кітапты таңдаңыз:</p>
+        
+        <div class="books-container">
+            <div class="book-wrapper">
+                <div class="counter" id="count-green">0</div>
+                <div class="book green-book" onclick="vote('green', 'Керемет! Жарайсың! 🌟')">
+                    <div class="book-icon">📗</div>
+                    <div>Бәрін түсіндім, сабақ өте қызықты болды</div>
+                </div>
+            </div>
+
+            <div class="book-wrapper">
+                <div class="counter" id="count-yellow">0</div>
+                <div class="book yellow-book" onclick="vote('yellow', 'Жақсы талпыныс! 🤔')">
+                    <div class="book-icon">📙</div>
+                    <div>Түсіндім, бірақ әлі де сұрақтарым бар</div>
+                </div>
+            </div>
+
+            <div class="book-wrapper">
+                <div class="counter" id="count-red">0</div>
+                <div class="book red-book" onclick="vote('red', 'Біз бірге жеңеміз! 💪')">
+                    <div class="book-icon">📕</div>
+                    <div>Маған қиын болды, көмек қажет</div>
+                </div>
+            </div>
+        </div>
+
+        <button class="reset-btn" onclick="resetCounters()">Статистиканы тазарту</button>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeBox()">
+        <div id="message-box">
+            <h2 id="feedback-text"></h2>
+            <p>(Жабу үшін экранды түртіңіз)</p>
+        </div>
+    </div>
+
+    <script>
+        let stats = { green: 0, yellow: 0, red: 0 };
+
+        function vote(type, message) {
+            // Санағышты жаңарту
+            stats[type]++;
+            document.getElementById('count-' + type).innerText = stats[type];
+
+            // Хабарламаны шығару
+            document.getElementById('feedback-text').innerText = message;
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('message-box').style.display = 'block';
+        }
+
+        function closeBox() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('message-box').style.display = 'none';
+        }
+
+        function resetCounters() {
+            if(confirm("Статистиканы нөлге түсіреміз бе?")) {
+                stats = { green: 0, yellow: 0, red: 0 };
+                document.getElementById('count-green').innerText = '0';
+                document.getElementById('count-yellow').innerText = '0';
+                document.getElementById('count-red').innerText = '0';
+            }
+        }
+    </script>
+</body>
+</html>
